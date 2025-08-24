@@ -3,9 +3,31 @@ import pandas as pd
 import joblib
 from flask_cors import CORS
 
+# === Load the saved ensemble ===
+ensemble_data = joblib.load('best_house_price_pipeline.pkl')
+
+# Recreate wrapper class
+class StackingEnsemble:
+    def __init__(self, model_pipelines, meta_model):
+        self.model_pipelines = model_pipelines
+        self.meta_model = meta_model
+
+    def predict(self, X):
+        meta_features = []
+        for name, pipeline in self.model_pipelines.items():
+            meta_features.append(pipeline.predict(X))
+        X_meta = pd.DataFrame(meta_features).T
+        return self.meta_model.predict(X_meta)
+
+# Create predictor instance
+model = StackingEnsemble(
+    ensemble_data['model_pipelines'],
+    ensemble_data['meta_model']
+)
+
+# === Flask app ===
 app = Flask(__name__)
 
-# Configure CORS properly
 CORS(app, resources={
     r"/predict": {
         "origins": "http://localhost:3000",
@@ -14,16 +36,12 @@ CORS(app, resources={
     }
 })
 
-# Add this middleware to handle OPTIONS requests
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
     return response
-
-# Load your model
-model = joblib.load('best_house_price_pipeline.pkl')
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
@@ -32,8 +50,8 @@ def predict():
     
     try:
         data = request.get_json()
-        
-        # Create input DataFrame
+
+        # Build input row
         input_data = pd.DataFrame([{
             'latitude': float(data['latitude']),
             'longitude': float(data['longitude']),
@@ -44,16 +62,15 @@ def predict():
             'propertyType': data['propertyType'],
             'currentEnergyRating': data['currentEnergyRating'],
             'saleEstimate_confidenceLevel': int(data['confidenceLevel']),
-            'year': 2023,
-            'month': 8,
-            'day': 1,
-            'price_per_sqm': None
+            'room_count': int(data['bedrooms']) + int(data['bathrooms']) + int(data['livingRooms']),
+            'bed_bath_ratio': int(data['bedrooms']) / (int(data['bathrooms']) + 0.01)
         }])
-        
+
+        # Make prediction
         prediction = model.predict(input_data)[0]
-        
+
         return jsonify({
-            'prediction': prediction,
+            'prediction': float(prediction),
             'status': 'success'
         })
     
