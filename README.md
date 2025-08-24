@@ -53,3 +53,38 @@ london-house-price-predictor/
 │   └── trained_models/       # Machine learning models
 ├── .gitignore                # Git exclusion rules
 └── README.md                 # This file
+```
+---
+
+## 🤖 Machine Learning
+**Model Architecture**
+Ensemble Stacking combining multiple models:
+- LightGBM
+- XGBoost
+- Random Forest
+- Gradient Boosting
+- Meta-model: Linear Regression
+
+**Training Data**
+- 418,201 training samples
+- 169,378 test samples
+- London property data 1995-2023
+- 11 engineered features
+
+**Performance Metrics**
+- Cross-validation RMSE: £138,782
+- Mean Absolute Error: £79,851
+- R² Score: 0.9747
+- No overfitting (test/train ratio: 0.992)
+
+
+## 📈 Results Interpretation
+- **High Confidence**: Predictions within 10% of actual prices
+- **Medium Confidence**: Predictions within 10-20% of actual prices
+- **Market Trends**: Model captures location premium and property features
+
+## 🙏 Acknowledgments
+London property data sources
+- Machine learning libraries: Scikit-learn, LightGBM, XGBoost
+- UI components: Material-UI, React-Leaflet
+- Deployment platforms: Vercel, Railway
