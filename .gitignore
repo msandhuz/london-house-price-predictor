@@ -1,0 +1,43 @@
+# Large data files - DO NOT UPLOAD
+backend/*.csv
+backend/*.pkl
+backend/*.joblib
+backend/*.xlsx
+backend/*.data
+
+# React
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+env/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
