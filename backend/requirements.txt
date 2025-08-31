@@ -1,3 +1,7 @@
+# Build essentials
+setuptools==68.2.2
+wheel==0.41.3
+
 # Web Framework
 flask==2.3.3
 flask-cors==4.0.0
