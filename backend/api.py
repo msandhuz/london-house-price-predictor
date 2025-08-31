@@ -28,20 +28,8 @@ model = StackingEnsemble(
 # === Flask app ===
 app = Flask(__name__)
 
-CORS(app, resources={
-    r"/predict": {
-        "origins": "http://localhost:3000",
-        "methods": ["POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
-    }
-})
-
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-    response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
-    return response
+# Update CORS for production - allow all origins or your frontend URL
+CORS(app)  # Allow all origins for now
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
